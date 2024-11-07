@@ -24,11 +24,11 @@ app.post("/login",async (req,res)=>{
     let pass=req.body.password;
     try
     {
-      const result=await db.query("select password from users where username =$1",[username]);
+      const result=await db.query("select password, name from users where username =$1",[username]);
       const data=result.rows[0];
       if(data.password===pass)
       {
-        res.json("valid")
+        res.json({status:"valid",name:data.name })
       }
       else{
         res.json("wrong password");
