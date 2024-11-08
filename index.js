@@ -61,6 +61,10 @@ app.post('/signup', async (req, res)=>{
   const buisness=req.body.buisness
 
   try{
+    if((req.body.username.length<8) || (!values.password.includes("_") || !values.password.includes("@") || !values.password.includes("#") || !values.password.includes("&") || !values.password.includes("-") || !values.password.includes("%") || !values.password.includes("$") || !values.password.includes("*"))){
+      res.send("password must have 8 characters and must include symbols like @#$%*&")
+    }
+    else{
     const result=await db.query("insert into users (name, mobile, username,  password, buisness, mail, rooms) values($1,$2,$3,$4,$5,$6,$7) ",[name, mobile, username, password, buisness, mail, rooms]);
     res.send("submitted")
     const mailOptions = {
@@ -75,7 +79,7 @@ app.post('/signup', async (req, res)=>{
         return console.log('Error occurred:', error);
       }
       console.log('Email sent:', info.response);
-    });
+    });}
   }
   catch(err){
     res.send(err.message)
@@ -85,14 +89,10 @@ app.post('/signup', async (req, res)=>{
 app.post('/data-submit',async(req,res)=>{
   if(req.query.apiKey==="njknj4j43npa@mweoc43"){
     try{
-      if((req.body.username.length<8) || (!values.password.includes("_") || !values.password.includes("@") || !values.password.includes("#") || !values.password.includes("&") || !values.password.includes("-") || !values.password.includes("%") || !values.password.includes("$") || !values.password.includes("*"))){
-        res.send("password must have 8 characters and must include symbols like @#$%*&")
-      }
-      else{
         const result=await db.query("insert into costumers (username, name, mobile, room_no, entry_date, entry_time,  out_date, out_time, members) values($1,$2,$3,$4,$5,$6,$7,$8,$9)",
         [req.body.username, req.body.name, req.body.mobile, req.body.roomNo, req.body.inDate, req.body.inTime, req.body.OutDate, req.body.OutTime, req.body.members] 
       )
-      res.send(req.body.name)}   
+      res.send(req.body.name) 
     }
     catch(err){
       res.send(err.message)
