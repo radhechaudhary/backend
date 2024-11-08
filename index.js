@@ -4,7 +4,6 @@ import bodyParser from "body-parser";
 import cors from "cors"
 import { configDotenv } from "dotenv";
 import { createTransport } from "nodemailer";
-import cors from "cors";
 
 const PORT=4000;
 const app=express();
