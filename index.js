@@ -4,9 +4,18 @@ import bodyParser from "body-parser";
 import cors from "cors"
 import { configDotenv } from "dotenv";
 import { createTransport } from "nodemailer";
+import cors from "cors";
 
 const PORT=4000;
 const app=express();
+
+const corsOptions = {
+  origin: "https://guest-regester.vercel.app", // Replace with your domain
+  optionsSuccessStatus: 200, // For legacy browser support
+};
+
+app.use(cors(corsOptions));
+
 
 const transporter=createTransport({
   service:'gmail',
