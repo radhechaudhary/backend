@@ -61,7 +61,7 @@ app.post('/signup', async (req, res)=>{
   const buisness=req.body.buisness
 
   try{
-    if((req.body.username.length<8) || (!values.password.includes("_") || !values.password.includes("@") || !values.password.includes("#") || !values.password.includes("&") || !values.password.includes("-") || !values.password.includes("%") || !values.password.includes("$") || !values.password.includes("*"))){
+    if((password.length<8) || (!password.includes("_") && !password.includes("@") && !password.includes("#") && !password.includes("&") && !password.includes("-") && !password.includes("%") && !password.includes("$") && !password.includes("*"))){
       res.send("password must have 8 characters and must include symbols like @#$%*&")
     }
     else{
