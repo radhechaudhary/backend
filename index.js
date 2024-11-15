@@ -11,7 +11,7 @@ const PORT=4000;
 const app=express();
 
 const corsOptions = {  //making  the  API domain restricted
-  origin: "https://regester-app-2v1q.vercel.app", // 
+  origin: "https://regester-app-2v1q.vercel.app/", // 
   optionsSuccessStatus: 200, // For legacy browser support
 };
 
