@@ -60,7 +60,7 @@ app.post("/login",async (req,res)=>{  //login route
     
     catch(err)
     {
-      res.send("username not found")
+      res.json({status:"username not found"})
     }
 })
 
