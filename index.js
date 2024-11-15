@@ -4,46 +4,49 @@ import bodyParser from "body-parser";
 import cors from "cors"
 import { configDotenv } from "dotenv";
 import { createTransport } from "nodemailer";
+import {bcrypt} from 'bcrypt'
 
 const PORT=4000;
 const app=express();
 
-const corsOptions = {
-  origin: "https://guest-regester.vercel.app", // Replace with your domain
-  optionsSuccessStatus: 200, // For legacy browser support
-};
+// const corsOptions = {  //making  the  API domain restricted
+//   origin: "https://guest-regester.vercel.app", // 
+//   optionsSuccessStatus: 200, // For legacy browser support
+// };
 
 app.use(cors(corsOptions));
 
-
-const transporter=createTransport({
+const transporter=createTransport({  //creating transporter object
   service:'gmail',
   auth: {
-    user: process.env.MY_GMAIL, // Your email address
+    user: process.env.MY_GMAIL, // mail address to send mails
     pass: process.env.MY_GMAIL_PASSWORD, // Your email password or app password
   },
 })
+app.use(cors())  // using cors
 
-const db=new pg.Client({
+const db=new pg.Client({  // creating database connection variables
     user: process.env.DATABASE_USER,
     host: process.env.DATABASE_HOST,
     database: process.env.DATABASE_DATABASE,
     password: process.env.DATABASE_PASSSWORD,
     port: process.env.DATABASE_PORT,
   });
+  db.connect(); //connecting to database
 
-  db.connect();
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json())
-  app.use(cors())
-app.post("/login",async (req,res)=>{
+
+  app.use(bodyParser.urlencoded({ extended: true })); //body parser to encode body data from frontend
+  app.use(bodyParser.json()) 
+
+app.post("/login",async (req,res)=>{  //login route
     let username=req.body.username;
     let pass=req.body.password;
     try
     {
       const result=await db.query("select password, name from users where username =$1",[username]);
       const data=result.rows[0];
-      if(data.password===pass)
+      const isMatch = await bcrypt.compare(pass, data.password);
+      if(isMatch)
       {
         res.json({status:"valid", name:data.name})
       }
@@ -59,7 +62,7 @@ app.post("/login",async (req,res)=>{
 })
 
 
-app.post('/signup', async (req, res)=>{
+app.post('/signup', async (req, res)=>{  // signup route
   const name=req.body.name;
   const mobile=req.body.mobile;
   const username=req.body.username;
@@ -73,7 +76,9 @@ app.post('/signup', async (req, res)=>{
       res.send("password must have 8 characters and must include symbols like @#$%*&")
     }
     else{
-    const result=await db.query("insert into users (name, mobile, username,  password, buisness, mail, rooms) values($1,$2,$3,$4,$5,$6,$7) ",[name, mobile, username, password, buisness, mail, rooms]);
+      const saltRounds = 10; // Higher rounds = more security but slower
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const result=await db.query("insert into users (name, mobile, username,  password, buisness, mail, rooms) values($1,$2,$3,$4,$5,$6,$7) ",[name, mobile, username, hashedPassword, buisness, mail, rooms]);
     res.send("submitted")
     const mailOptions = {
       from: 'radhechaudhary6398@gmail.comm', // Sender address
@@ -82,7 +87,7 @@ app.post('/signup', async (req, res)=>{
       text: 'Hello!! Thankyou for connecting with us!! Hope the journey will be great!!', // Plain text body
       html: '<p>Hello!!<b>Thankyou for connecting with us</b>Hope the journey will be great!!</p>', // HTML body (optional)
     };
-    transporter.sendMail(mailOptions, (error, info) => {
+    transporter.sendMail(mailOptions, (error, info) => { // sendmail function to send mail
       if (error) {
         return console.log('Error occurred:', error);
       }
