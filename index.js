@@ -98,7 +98,7 @@ app.post('/signup', async (req, res)=>{  // signup route
     });}
   }
   catch(err){
-    res.send(err.message)
+    res.send("username already exists")
   }
 })
 
