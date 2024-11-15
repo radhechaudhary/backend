@@ -10,12 +10,13 @@ import bcrypt from 'bcryptjs';
 const PORT=4000;
 const app=express();
 
-const corsOptions = {  //making  the  API domain restricted
-  origin: "https://regester-app-2v1q.vercel.app/", // 
-  optionsSuccessStatus: 200, // For legacy browser support
-};
+// const corsOptions = {  //making  the  API domain restricted
+//   origin: "https://regester-app-2v1q.vercel.app/", // 
+//   optionsSuccessStatus: 200, // For legacy browser support
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors())
 
 
 const transporter=createTransport({
