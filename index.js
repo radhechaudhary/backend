@@ -4,7 +4,8 @@ import bodyParser from "body-parser";
 import cors from "cors"
 import { configDotenv } from "dotenv";
 import { createTransport } from "nodemailer";
-import {bcrypt} from 'bcrypt'
+import bcrypt from 'bcrypt';
+
 
 const PORT=4000;
 const app=express();
